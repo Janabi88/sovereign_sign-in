@@ -1,15 +1,14 @@
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react'
 import { Toaster, toast } from 'react-hot-toast'
 import { claims, setGrant, getLatestAudit } from './consentStore'
 import './App.css'
 
 function Dashboard(){
   const appId = 'partner1'
-  const approve = async (type) => {
+  const approve = (type) => {
     setGrant(appId, [type])
     toast.success(`Approved ${type}`)
   }
-  const denyAll = async () => {
+  const denyAll = () => {
     setGrant(appId, [])
     toast('Data leak blocked', { icon: '🔒' })
   }
@@ -20,6 +19,7 @@ function Dashboard(){
         <h2>Your claims</h2>
         <a className="btn" href="/partner">Open partner app</a>
       </div>
+
       <div className="grid">
         {claims.map(c => (
           <div key={c.id} className="card">
@@ -35,9 +35,9 @@ function Dashboard(){
       <div className="card" style={{marginTop:16}}>
         <h3>Stalker App requests access</h3>
         <div className="row" style={{marginTop:8, gap:8}}>
-          <button className="btn" onClick={() => approve('organization')}>Approve organization</button>
-          <button className="btn" onClick={() => approve('email')}>Approve email</button>
-          <button className="btn secondary" onClick={denyAll}>Deny all</button>
+          <button className="btn" onClick={() => approve('organization')} aria-label="Approve organization">Approve organization</button>
+          <button className="btn" onClick={() => approve('email')} aria-label="Approve email">Approve email</button>
+          <button className="btn secondary" onClick={denyAll} aria-label="Deny all claims">Deny all</button>
         </div>
       </div>
 
@@ -56,11 +56,9 @@ export default function App(){
       <Toaster />
       <div className="row">
         <h1>Sovereign Sign In</h1>
-        <SignedIn><UserButton /></SignedIn>
-        <SignedOut><SignInButton /></SignedOut>
       </div>
-      <SignedOut><p>Sign in to manage your claims and connect apps.</p></SignedOut>
-      <SignedIn><Dashboard /></SignedIn>
+      <p style={{marginTop:8}}>SAFE MODE is enabled. This runs without Clerk so you can demo the consent and sharing flow.</p>
+      <Dashboard />
     </div>
   )
 }
